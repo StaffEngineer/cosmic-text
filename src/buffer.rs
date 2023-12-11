@@ -13,6 +13,7 @@
 
 #[cfg(not(feature = "std"))]
 use alloc::{
+    borrow::ToOwned,
     string::{String, ToString},
     vec::Vec,
 };
@@ -487,7 +488,7 @@ impl Buffer {
 
         let scroll_end = self.scroll + lines;
         let total_layout = self.shape_until(font_system, scroll_end);
-        self.scroll = (total_layout - (lines - 1)).clamp(0, self.scroll);
+        self.scroll = (total_layout - lines).clamp(0, self.scroll);
     }
 
     pub fn layout_cursor(&self, cursor: &Cursor) -> LayoutCursor {
@@ -763,17 +764,18 @@ impl Buffer {
                 maybe_line = lines_iter.next();
                 if maybe_line.is_some() {
                     // finalize this line and start a new line
-                    //TODO: there can be newlines, that has their own span attributes, "\n" lines for example
+
                     let attr_list = match &maybe_span {
+                        // there can be newlines, that has their own span attributes, "\n" lines for example, thus add
+                        // their spans if they need it
                         Some((attr, range)) => {
                             let mut list = AttrsList::new(default_attrs);
-                            list.add_span(range.clone(), attr.to_owned());
+                            if *attr != attrs_list.defaults() {
+                                list.add_span(range.clone(), attr.to_owned());
+                            }
                             list
                         }
-                        None => {
-                            println!("defaultattrs");
-                            AttrsList::new(default_attrs)
-                        }
+                        None => AttrsList::new(default_attrs),
                     };
                     let prev_attrs_list = core::mem::replace(&mut attrs_list, attr_list);
                     let prev_line_string = core::mem::take(&mut line_string);
