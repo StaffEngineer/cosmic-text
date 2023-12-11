@@ -2,7 +2,7 @@
 
 use cosmic_text::{
     Action, Attrs, Buffer, Color, Edit, Editor, Family, FontSystem, LineHeight, Shaping, Style,
-    SwashCache, Weight,
+    SwashCache,
 };
 use orbclient::{EventOption, Renderer, Window, WindowFlag};
 use std::{
@@ -47,128 +47,17 @@ fn main() {
     let attrs = Attrs::new()
         .font_size(32.0)
         .line_height(LineHeight::Absolute(44.0))
-        .scale(display_scale);
-    let serif_attrs = attrs.family(Family::Serif);
-    let mono_attrs = attrs.family(Family::Monospace);
-    let comic_attrs = attrs.family(Family::Name("Comic Neue"));
-
-    let spans: &[(&str, Attrs)] = &[
-        ("B", attrs.weight(Weight::BOLD)),
-        ("old ", attrs),
-        ("I", attrs.style(Style::Italic)),
-        ("talic ", attrs),
-        ("f", attrs),
-        ("i ", attrs),
-        ("f", attrs.weight(Weight::BOLD)),
-        ("i ", attrs),
-        ("f", attrs.style(Style::Italic)),
-        ("i \n", attrs),
-        ("Sans-Serif Normal ", attrs),
-        ("Sans-Serif Bold ", attrs.weight(Weight::BOLD)),
-        ("Sans-Serif Italic ", attrs.style(Style::Italic)),
-        (
-            "Sans-Serif Bold Italic\n",
-            attrs.weight(Weight::BOLD).style(Style::Italic),
-        ),
-        ("Serif Normal ", serif_attrs),
-        ("Serif Bold ", serif_attrs.weight(Weight::BOLD)),
-        ("Serif Italic ", serif_attrs.style(Style::Italic)),
-        (
-            "Serif Bold Italic\n",
-            serif_attrs.weight(Weight::BOLD).style(Style::Italic),
-        ),
-        ("Mono Normal ", mono_attrs),
-        ("Mono Bold ", mono_attrs.weight(Weight::BOLD)),
-        ("Mono Italic ", mono_attrs.style(Style::Italic)),
-        (
-            "Mono Bold Italic\n",
-            mono_attrs.weight(Weight::BOLD).style(Style::Italic),
-        ),
-        ("Comic Normal ", comic_attrs),
-        ("Comic Bold ", comic_attrs.weight(Weight::BOLD)),
-        ("Comic Italic ", comic_attrs.style(Style::Italic)),
-        (
-            "Comic Bold Italic\n",
-            comic_attrs.weight(Weight::BOLD).style(Style::Italic),
-        ),
-        ("R", attrs.color(Color::rgb(0xFF, 0x00, 0x00))),
-        ("A", attrs.color(Color::rgb(0xFF, 0x7F, 0x00))),
-        ("I", attrs.color(Color::rgb(0xFF, 0xFF, 0x00))),
-        ("N", attrs.color(Color::rgb(0x00, 0xFF, 0x00))),
-        ("B", attrs.color(Color::rgb(0x00, 0x00, 0xFF))),
-        ("O", attrs.color(Color::rgb(0x4B, 0x00, 0x82))),
-        ("W ", attrs.color(Color::rgb(0x94, 0x00, 0xD3))),
-        (
-            "Red ",
-            attrs
-                .color(Color::rgb(0xFF, 0x00, 0x00))
-                .font_size(attrs.font_size * 1.9)
-                .line_height(LineHeight::Proportional(0.9)),
-        ),
-        (
-            "Orange ",
-            attrs
-                .color(Color::rgb(0xFF, 0x7F, 0x00))
-                .font_size(attrs.font_size * 1.6)
-                .line_height(LineHeight::Proportional(1.0)),
-        ),
-        (
-            "Yellow ",
-            attrs
-                .color(Color::rgb(0xFF, 0xFF, 0x00))
-                .font_size(attrs.font_size * 1.3)
-                .line_height(LineHeight::Proportional(1.1)),
-        ),
-        (
-            "Green ",
-            attrs
-                .color(Color::rgb(0x00, 0xFF, 0x00))
-                .font_size(attrs.font_size * 1.0)
-                .line_height(LineHeight::Proportional(1.2)),
-        ),
-        (
-            "Blue ",
-            attrs
-                .color(Color::rgb(0x00, 0x00, 0xFF))
-                .font_size(attrs.font_size * 0.8)
-                .line_height(LineHeight::Proportional(1.3)),
-        ),
-        (
-            "Indigo ",
-            attrs
-                .color(Color::rgb(0x4B, 0x00, 0x82))
-                .font_size(attrs.font_size * 0.6)
-                .line_height(LineHeight::Proportional(1.4)),
-        ),
-        (
-            "Violet ",
-            attrs
-                .color(Color::rgb(0x94, 0x00, 0xD3))
-                .font_size(attrs.font_size * 0.4)
-                .line_height(LineHeight::Proportional(1.5)),
-        ),
-        ("U", attrs.color(Color::rgb(0x94, 0x00, 0xD3))),
-        ("N", attrs.color(Color::rgb(0x4B, 0x00, 0x82))),
-        ("I", attrs.color(Color::rgb(0x00, 0x00, 0xFF))),
-        ("C", attrs.color(Color::rgb(0x00, 0xFF, 0x00))),
-        ("O", attrs.color(Color::rgb(0xFF, 0xFF, 0x00))),
-        ("R", attrs.color(Color::rgb(0xFF, 0x7F, 0x00))),
-        ("N\n", attrs.color(Color::rgb(0xFF, 0x00, 0x00))),
-        (
-            "\n",
-            attrs
-                .color(Color::rgb(0xFF, 0x00, 0x00))
-                .line_height(LineHeight::Absolute(100.)),
-        ),
-        (
-            "生活,삶,जिंदगी 😀 FPS\n",
-            attrs.color(Color::rgb(0xFF, 0x00, 0x00)),
-        ),
-    ];
+        .scale(display_scale)
+        .family(Family::Name("Times New Roman"));
 
     editor
         .buffer_mut()
-        .set_rich_text(spans.iter().copied(), attrs, Shaping::Advanced);
+        .set_text("Blah\nblah", attrs, Shaping::Advanced);
+
+    for line in &editor.buffer_mut().lines {
+        dbg!(line.text());
+        dbg!(line.attrs_list());
+    }
 
     let mut swash_cache = SwashCache::new();
 
